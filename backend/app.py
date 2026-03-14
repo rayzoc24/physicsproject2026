@@ -434,6 +434,25 @@ MODELS = {
 }
 
 
+@app.route("/", methods=["GET"])
+def index():
+    return jsonify(
+        {
+            "service": "spacetime-curvature-backend",
+            "status": "ok",
+            "endpoints": {
+                "simulate": "/simulate?object=blackhole",
+                "health": "/health",
+            },
+        }
+    )
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "healthy"})
+
+
 @app.route("/simulate", methods=["GET"])
 def simulate():
     object_name = request.args.get("object", "blackhole").strip().lower()
