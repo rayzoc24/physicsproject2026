@@ -1,0 +1,14 @@
+[build]
+  command = "npm --prefix frontend install && npm --prefix frontend run build"
+  publish = "frontend/dist"
+
+[[redirects]]
+  from = "/simulate"
+  to = "https://cosmocurve.onrender.com/simulate"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
