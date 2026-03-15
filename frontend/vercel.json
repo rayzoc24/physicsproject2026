@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/simulate",
-      "destination": "https://cosmocurve.onrender.com/simulate"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
