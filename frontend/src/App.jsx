@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import ThreeScene from "./ThreeScene";
 import MathGraph from "./MathGraph";
 
@@ -77,6 +76,19 @@ const DEFAULT_PARAMS = {
   binary: { mass1: 1.35, mass2: 1.15, separation: 8.0, resolution: 240 },
 };
 
+const SIMULATE_API_URL = "https://cosmocurve.onrender.com/simulate";
+
+async function runSimulation(query) {
+  const response = await fetch(`${SIMULATE_API_URL}?${query.toString()}`);
+
+  if (!response.ok) {
+    throw new Error("Simulation request failed");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 function App() {
   const [selectedObject, setSelectedObject] = useState("blackhole");
   const [wireframe, setWireframe] = useState(false);
@@ -122,25 +134,26 @@ function App() {
       setError("");
 
       try {
-        const response = await axios.get("/simulate", {
-          params: {
+        const query = new URLSearchParams(
+          Object.entries({
             object: selectedObject,
             t: simTime.toFixed(3),
             ...activeParams,
-          },
-        });
+          }).map(([key, value]) => [key, String(value)])
+        );
+        const data = await runSimulation(query);
 
-        if (!Array.isArray(response.data?.field)) {
+        if (!Array.isArray(data?.field)) {
           throw new Error("Backend returned invalid field data.");
         }
 
-        setField(response.data.field);
-        setRays(Array.isArray(response.data.rays) ? response.data.rays : []);
-        setLabels(Array.isArray(response.data.labels) ? response.data.labels : []);
-        setMetadata(response.data.metadata ?? null);
-        setGraph(response.data.graph ?? null);
-        setReference(response.data.reference ?? null);
-        setVerification(response.data.verification ?? null);
+        setField(data.field);
+        setRays(Array.isArray(data.rays) ? data.rays : []);
+        setLabels(Array.isArray(data.labels) ? data.labels : []);
+        setMetadata(data.metadata ?? null);
+        setGraph(data.graph ?? null);
+        setReference(data.reference ?? null);
+        setVerification(data.verification ?? null);
       } catch (requestError) {
         setError(requestError?.message || "Failed to fetch simulation data.");
         setField([]);

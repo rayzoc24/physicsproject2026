@@ -1,6 +1,15 @@
 {
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
     {
+<<<<<<< HEAD
+=======
+      "source": "/simulate",
+      "destination": "https://cosmocurve.onrender.com/simulate"
+    },
+    {
+>>>>>>> 0b0833e (update simulate api call)
       "source": "/(.*)",
       "destination": "/index.html"
     }
